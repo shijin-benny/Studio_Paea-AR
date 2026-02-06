@@ -16,6 +16,15 @@ export default async function WorkCategoryPage({ params }: PageProps) {
   if (!CATEGORIES.includes(category as ProjectCategory)) notFound();
   const projects = getProjectsByCategory(category as ProjectCategory);
   
+  // Early return if no projects
+  if (!projects.length) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <p className="text-neutral-500 font-light tracking-wide">No projects in this category.</p>
+      </div>
+    );
+  }
+  
   return (
     <Suspense fallback={<LoadingSpinner />}>
       <WorkGallery projects={projects} />

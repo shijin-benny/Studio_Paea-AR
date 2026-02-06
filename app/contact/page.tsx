@@ -1,8 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useState, useMemo, useCallback } from 'react';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -16,38 +14,38 @@ export default function ContactPage() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const pathname = usePathname();
-  const activeCategory = pathname === '/work/architecture' ? 'architecture' : pathname === '/work/interiors' ? 'interiors' : pathname === '/work/landscape' ? 'landscape' : null;
+  // Memoize email regex to avoid recreating on each render
+  const emailRegex = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/, []);
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const validateEmail = useCallback((email: string): boolean => {
     return emailRegex.test(email);
-  };
+  }, [emailRegex]);
 
-  const validateField = (name: string, value: string): string => {
+  const validateField = useCallback((name: string, value: string): string => {
+    const trimmedValue = value.trim();
     switch (name) {
       case 'email':
-        if (!value.trim()) return 'Email is required';
-        if (!validateEmail(value)) return 'Please enter a valid email address';
+        if (!trimmedValue) return 'Email is required';
+        if (!validateEmail(trimmedValue)) return 'Please enter a valid email address';
         return '';
       case 'firstName':
-        if (!value.trim()) return 'First name is required';
-        if (value.trim().length < 2) return 'First name must be at least 2 characters';
+        if (!trimmedValue) return 'First name is required';
+        if (trimmedValue.length < 2) return 'First name must be at least 2 characters';
         return '';
       case 'lastName':
-        if (!value.trim()) return 'Last name is required';
-        if (value.trim().length < 2) return 'Last name must be at least 2 characters';
+        if (!trimmedValue) return 'Last name is required';
+        if (trimmedValue.length < 2) return 'Last name must be at least 2 characters';
         return '';
       case 'message':
-        if (!value.trim()) return 'Message is required';
-        if (value.trim().length < 10) return 'Message must be at least 10 characters';
+        if (!trimmedValue) return 'Message is required';
+        if (trimmedValue.length < 10) return 'Message must be at least 10 characters';
         return '';
       default:
         return '';
     }
-  };
+  }, [validateEmail]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
@@ -59,17 +57,17 @@ export default function ContactPage() {
         return newErrors;
       });
     }
-  };
+  }, [errors]);
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     const error = validateField(name, value);
     if (error) {
       setErrors(prev => ({ ...prev, [name]: error }));
     }
-  };
+  }, [validateField]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
     setSubmitStatus('idle');
@@ -119,103 +117,58 @@ export default function ContactPage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [formData, validateField]);
 
   return (
-    <div className="h-screen bg-white overflow-hidden flex flex-col">
-      {/* Fixed nav bar — same as gallery */}
-      <header className="flex-shrink-0 flex items-center justify-between px-6 md:px-12 py-5 border-b border-neutral-200/60 bg-white/95 backdrop-blur-sm shadow-sm overflow-visible">
-        <nav
-          className="flex items-center gap-3 md:gap-5 text-neutral-900 text-xs md:text-sm font-light tracking-[0.25em] uppercase"
-          aria-label="Categories"
-        >
-          <Link
-            href="/work/architecture"
-            className={activeCategory === 'architecture' ? 'border-b border-neutral-900 pb-0.5' : 'hover:opacity-70 transition-opacity'}
-          >
-            architecture
-          </Link>
-          <span className="opacity-50" aria-hidden>—</span>
-          <Link
-            href="/work/interiors"
-            className={activeCategory === 'interiors' ? 'border-b border-neutral-900 pb-0.5' : 'hover:opacity-70 transition-opacity'}
-          >
-            interiors
-          </Link>
-          <span className="opacity-50" aria-hidden>—</span>
-          <Link
-            href="/work/landscape"
-            className={activeCategory === 'landscape' ? 'border-b border-neutral-900 pb-0.5' : 'hover:opacity-70 transition-opacity'}
-          >
-            landscape
-          </Link>
-        </nav>
-
-        <nav className="flex items-center gap-6 md:gap-8 text-neutral-900 text-xs md:text-sm font-light tracking-[0.2em] uppercase overflow-visible">
-          <Link href="/" className="hover:opacity-70 transition-opacity">
-            work
-          </Link>
-          <span 
-            className="relative inline-block cursor-not-allowed opacity-50 hover:opacity-70 transition-opacity"
-            aria-label="Coming Soon"
-            onMouseEnter={() => {}}
-            onMouseLeave={() => {}}
-          >
-            publications
-          </span>
-          <Link href="/contact" className="border-b border-neutral-900 pb-0.5 hover:opacity-70 transition-opacity">
-            contact
-          </Link>
-        </nav>
-      </header>
+    <div className="h-screen bg-white overflow-hidden flex flex-col" style={{ position: 'relative', zIndex: 1 }}>
 
       {/* Main content — Single page, no scroll */}
-      <div className="flex-1 px-6 md:px-12 py-8 flex items-center overflow-auto bg-gradient-to-br from-white via-neutral-50/30 to-white">
+      <div className="flex-1 px-4 sm:px-6 md:px-12 py-6 sm:py-8 flex items-center overflow-auto bg-gradient-to-br from-white via-neutral-50/30 to-white">
         <div className="max-w-7xl mx-auto w-full h-full flex items-center">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-32 items-center w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-32 items-start lg:items-center w-full">
             {/* Left Column — Contact Information — Modern & Elegant */}
-            <div className="flex flex-col justify-center items-start gap-12 text-neutral-900">
-              <div className="space-y-1 group">
-                <div className="text-[9px] md:text-[10px] font-medium tracking-[0.25em] uppercase text-neutral-500 mb-3">
+            <div className="flex flex-col justify-center items-start gap-8 sm:gap-10 md:gap-12 text-neutral-900 order-2 lg:order-1">
+              <div className="space-y-1 group w-full">
+                <div className="text-[8px] sm:text-[9px] md:text-[10px] font-medium tracking-[0.25em] uppercase text-neutral-500 mb-2 sm:mb-3">
                   Email
                 </div>
                 <a 
                   href="mailto:hello@studiopaea.com" 
-                  className="text-2xl md:text-3xl font-sans font-medium tracking-wide hover:text-neutral-600 transition-all duration-300 block group-hover:translate-x-1"
+                  className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-sans font-medium tracking-wide hover:text-neutral-600 transition-all duration-300 block group-hover:translate-x-1 break-all sm:break-normal"
                 >
                   hello@studiopaea.com
                 </a>
               </div>
               
-              <div className="space-y-1 group">
-                <div className="text-[9px] md:text-[10px] font-medium tracking-[0.25em] uppercase text-neutral-500 mb-3">
+              <div className="space-y-1 group w-full">
+                <div className="text-[8px] sm:text-[9px] md:text-[10px] font-medium tracking-[0.25em] uppercase text-neutral-500 mb-2 sm:mb-3">
                   Phone
                 </div>
                 <a 
                   href="tel:+1234567890" 
-                  className="text-2xl md:text-3xl font-sans font-medium tracking-wide hover:text-neutral-600 transition-all duration-300 block group-hover:translate-x-1"
+                  className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-sans font-medium tracking-wide hover:text-neutral-600 transition-all duration-300 block group-hover:translate-x-1"
                 >
                   +1 234 567 890
                 </a>
               </div>
               
-              <div className="space-y-1 pt-1">
-                <div className="text-[9px] md:text-[10px] font-medium tracking-[0.25em] uppercase text-neutral-500 mb-3">
+              <div className="space-y-1 pt-1 w-full">
+                <div className="text-[8px] sm:text-[9px] md:text-[10px] font-medium tracking-[0.25em] uppercase text-neutral-500 mb-2 sm:mb-3">
                   Address
                 </div>
-                <div className="text-base md:text-lg font-normal tracking-wide text-neutral-600 leading-relaxed space-y-1">
+                <div className="text-sm sm:text-base md:text-lg font-normal tracking-wide text-neutral-600 leading-relaxed space-y-0.5 sm:space-y-1">
                   <p>123 design street</p>
                   <p>creative district, suite 500</p>
                   <p>new york ny 10001</p>
-                  <p className="mt-2 text-neutral-800 font-medium">united states</p>
+                  <p className="mt-1 sm:mt-2 text-neutral-800 font-medium">united states</p>
                 </div>
               </div>
               
-              <div className="pt-6">
-                <div className="text-[9px] md:text-[10px] font-medium tracking-[0.25em] uppercase text-neutral-500 mb-4">
+              <div className="pt-4 sm:pt-6 w-full">
+                <div className="text-[8px] sm:text-[9px] md:text-[10px] font-medium tracking-[0.25em] uppercase text-neutral-500 mb-3 sm:mb-4">
                   Follow Us
                 </div>
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-5 sm:gap-6">
                   {/* Instagram */}
                   <a 
                     href="https://instagram.com" 
@@ -259,12 +212,12 @@ export default function ContactPage() {
             </div>
 
             {/* Right Column — Contact Form — Modern & Refined */}
-            <div className="bg-gradient-to-br from-white via-neutral-50/40 to-white/90 backdrop-blur-lg rounded-3xl p-10 md:p-12 flex flex-col justify-center shadow-[0_25px_70px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.05)] border border-neutral-200/60 relative overflow-hidden">
+            <div className="bg-gradient-to-br from-white via-neutral-50/40 to-white/90 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 flex flex-col justify-center shadow-[0_25px_70px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.05)] border border-neutral-200/60 relative overflow-hidden order-1 lg:order-2">
               {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-neutral-100/30 to-transparent rounded-full blur-3xl pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-neutral-100/20 to-transparent rounded-full blur-2xl pointer-events-none" />
               
-              <form onSubmit={handleSubmit} className="space-y-7 relative z-10">
+              <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6 md:space-y-7 relative z-10">
                 {/* Email Field */}
                 <div className="group">
                   <label htmlFor="email" className="block text-[8px] md:text-[9px] font-medium tracking-[0.25em] uppercase text-neutral-500 mb-2.5 group-focus-within:text-neutral-700 transition-colors">
