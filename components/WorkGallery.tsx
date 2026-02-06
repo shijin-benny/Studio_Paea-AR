@@ -146,40 +146,17 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-gradient-to-b from-white via-neutral-50/30 to-white flex flex-col relative" style={{ position: 'relative', zIndex: 1 }}>
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgb(0,0,0) 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+    <div className="h-screen overflow-hidden bg-white flex flex-col relative" style={{ position: 'relative', zIndex: 1 }}>
 
       {/* Main image — ultra-luxurious presentation */}
       {/* Nav ~10vh (fixed overlay), Card ~70vh, Strips ~20vh */}
       <div className="flex flex-col items-center justify-center px-2 sm:px-4 overflow-hidden relative gallery-fade-in" style={{ zIndex: 1, pointerEvents: 'auto' as const, height: '70vh', minHeight: '70vh', maxHeight: '70vh', marginTop: '10vh' } as React.CSSProperties}>
-        {/* Decorative corner accents — hidden on mobile */}
-        <div className="hidden md:block absolute top-20 left-8 w-24 h-24 border-t-2 border-l-2 border-neutral-200/40 opacity-30" />
-        <div className="hidden md:block absolute top-20 right-8 w-24 h-24 border-t-2 border-r-2 border-neutral-200/40 opacity-30" />
-        
-        <div className="relative w-full h-full max-w-5xl max-h-full bg-gradient-to-br from-neutral-50 via-white via-neutral-50/50 to-neutral-50 overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl shadow-[0_25px_70px_-20px_rgba(0,0,0,0.35),0_0_0_1px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.6)]" style={{ maxHeight: '100%' }}>
-          {/* Modern Loading Spinner */}
+        <div className="relative w-full h-full max-w-5xl max-h-full bg-white overflow-hidden rounded-none border border-neutral-200" style={{ maxHeight: '100%' }}>
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center z-30 bg-gradient-to-br from-white/95 via-neutral-50/80 to-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden">
-              {/* Shimmer effect */}
-              <div className="absolute inset-0 animate-shimmer opacity-30"></div>
-              
-              <div className="flex flex-col items-center gap-4 sm:gap-5 relative z-10">
-                {/* Modern double-ring spinner */}
-                <div className="relative">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 border-2 border-neutral-200 rounded-full"></div>
-                  <div className="absolute inset-0 w-12 h-12 sm:w-16 sm:h-16 border-2 border-transparent border-t-neutral-900 border-r-neutral-900 rounded-full animate-spin" style={{ animationDuration: '1s' }}></div>
-                  <div className="absolute inset-1.5 sm:inset-2 w-9 h-9 sm:w-12 sm:h-12 border-2 border-transparent border-b-neutral-700 border-l-neutral-700 rounded-full animate-spin" style={{ animationDuration: '0.7s', animationDirection: 'reverse' }}></div>
-                  <div className="absolute inset-3 sm:inset-4 w-6 h-6 sm:w-8 sm:h-8 bg-neutral-900/10 rounded-full animate-pulse-glow"></div>
-                </div>
-                
-                {/* Animated dots */}
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-neutral-900 rounded-full animate-bounce" style={{ animationDelay: '0ms', animationDuration: '1s' }}></div>
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-neutral-900 rounded-full animate-bounce" style={{ animationDelay: '150ms', animationDuration: '1s' }}></div>
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-neutral-900 rounded-full animate-bounce" style={{ animationDelay: '300ms', animationDuration: '1s' }}></div>
-                </div>
-                <p className="text-[10px] sm:text-xs md:text-sm text-neutral-600 font-light tracking-wide">Loading image...</p>
+            <div className="absolute inset-0 flex items-center justify-center z-30 bg-white">
+              <div className="flex flex-col items-center gap-3 relative z-10">
+                <div className="w-8 h-8 border-2 border-neutral-200 border-t-neutral-600 rounded-full animate-spin" />
+                <p className="text-xs text-neutral-500">Loading...</p>
               </div>
             </div>
           )}
@@ -189,8 +166,8 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
             return (
             <div
               key={project.id}
-              className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-                isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.97]'
+              className={`absolute inset-0 transition-opacity duration-300 ${
+                isActive ? 'opacity-100' : 'opacity-0'
               }`}
               style={{ pointerEvents: (isActive ? 'auto' : 'none') as React.CSSProperties['pointerEvents'] }}
             >
@@ -208,11 +185,6 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
             </div>
             );
           })}
-          
-          {/* Multi-layer elegant effects */}
-          <div className="absolute inset-0 pointer-events-none rounded-3xl shadow-[inset_0_0_80px_rgba(0,0,0,0.1),inset_0_2px_0_rgba(255,255,255,0.6),inset_0_-2px_0_rgba(0,0,0,0.05)]" />
-          <div className="absolute inset-0 pointer-events-none rounded-3xl" style={{ backgroundImage: 'radial-gradient(circle at center, transparent 0%, transparent 55%, rgba(0,0,0,0.06) 100%)' }} />
-          <div className="absolute inset-0 pointer-events-none rounded-3xl bg-gradient-to-b from-white/20 via-transparent to-transparent" />
           
           {/* Progress indicator for auto-slider */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
@@ -232,17 +204,9 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
       {/* Nav ~10vh, Card ~70vh, Strips ~20vh */}
       <div
         ref={stripRef}
-        className="relative flex-shrink-0 border-t border-neutral-200/50 bg-gradient-to-b from-white via-neutral-50/30 via-white/80 to-neutral-50/50 overflow-x-auto overflow-y-visible scroll-smooth backdrop-blur-lg shadow-[0_-8px_32px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.8)]"
+        className="relative flex-shrink-0 border-t border-neutral-200/50 bg-white overflow-x-auto overflow-y-visible scroll-smooth shadow-[0_-4px_16px_rgba(0,0,0,0.06)]"
         style={{ scrollbarGutter: 'stable', WebkitOverflowScrolling: 'touch', height: '20vh', minHeight: '20vh', maxHeight: '20vh' }}
       >
-        {/* Elegant decorative elements */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-neutral-300/60 via-neutral-200/40 to-transparent" />
-        <div className="absolute top-[1px] left-0 right-0 h-[0.5px] bg-gradient-to-r from-transparent via-white/80 to-transparent" />
-        
-        {/* Subtle side gradients for depth — behind thumbnails so active border/number are never covered */}
-        <div className="absolute top-0 left-0 w-12 sm:w-20 h-full bg-gradient-to-r from-white via-transparent to-transparent pointer-events-none z-0" />
-        <div className="absolute top-0 right-0 w-12 sm:w-20 h-full bg-gradient-to-l from-white via-transparent to-transparent pointer-events-none z-0" />
-        
         <div className="flex gap-2.5 sm:gap-3 md:gap-5 lg:gap-6 px-3 sm:px-4 md:px-6 lg:px-12 py-2.5 sm:py-3 min-w-max relative flex-shrink-0 z-10" style={{ margin: '0 auto', width: 'fit-content' }}>
           {validProjects.map((project, index) => (
             <button
@@ -251,7 +215,7 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
               type="button"
               onClick={() => goTo(index)}
               style={{ animationDelay: `${index * 50}ms` }}
-              className={`group relative flex-shrink-0 w-20 h-12 sm:w-28 sm:h-16 md:w-36 md:h-20 bg-gradient-to-br from-neutral-100 via-neutral-50 via-white to-neutral-200 overflow-hidden rounded-lg sm:rounded-xl transition-all duration-500 ease-out thumbnail-enter ${
+              className={`group relative flex-shrink-0 w-20 h-12 sm:w-28 sm:h-16 md:w-36 md:h-20 bg-neutral-100 overflow-hidden rounded-none transition-all duration-500 ease-out thumbnail-enter ${
                 index === selectedIndex
                   ? 'ring-2 sm:ring-[3px] ring-neutral-900 shadow-[0_15px_40px_-10px_rgba(0,0,0,0.5),0_0_0_2px_rgba(255,255,255,0.2),inset_0_0_0_1px_rgba(0,0,0,0.08)] scale-105 sm:scale-110 z-10'
                   : 'shadow-[0_5px_16px_rgba(0,0,0,0.2)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] hover:scale-105 hover:-translate-y-1 sm:hover:-translate-y-2 hover:ring-2 hover:ring-neutral-300/60'
@@ -260,14 +224,14 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
               aria-current={index === selectedIndex ? 'true' : undefined}
             >
               {/* Base gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-neutral-100/80 via-white/50 to-neutral-200/80 rounded-lg sm:rounded-xl" />
+              <div className="absolute inset-0 bg-neutral-100/90 rounded-none" />
               
               {/* Image with elegant zoom and brightness */}
               <Image
                 src={project.images[0]}
                 alt={`${project.title} thumbnail`}
                 fill
-                className={`object-cover transition-all duration-700 ease-out rounded-lg sm:rounded-xl ${
+                className={`object-cover transition-all duration-700 ease-out rounded-none ${
                   index === selectedIndex 
                     ? 'scale-100 brightness-100 saturate-100' 
                     : 'group-hover:scale-120 brightness-[0.92] group-hover:brightness-100 saturate-90 group-hover:saturate-100'
@@ -293,7 +257,7 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
               
               {/* Modern thumbnail loading overlay */}
               {!imageLoaded[index] && (
-                <div className="absolute inset-0 bg-gradient-to-br from-neutral-50/80 via-white/60 to-neutral-50/80 backdrop-blur-sm flex items-center justify-center rounded-lg sm:rounded-xl">
+                <div className="absolute inset-0 bg-neutral-100/90 backdrop-blur-sm flex items-center justify-center rounded-none">
                   <div className="flex items-center gap-1 sm:gap-1.5">
                     <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-neutral-400 rounded-full animate-bounce" style={{ animationDelay: '0ms', animationDuration: '0.8s' }}></div>
                     <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-neutral-500 rounded-full animate-bounce" style={{ animationDelay: '150ms', animationDuration: '0.8s' }}></div>
@@ -305,9 +269,9 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
               {/* Multi-layer overlay effects for non-active */}
               {index !== selectedIndex && (
                 <>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/8 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg sm:rounded-xl" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-white/0 to-white/25 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg sm:rounded-xl" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg sm:rounded-xl" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/8 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-none" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-white/0 to-white/25 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-none" />
                 </>
               )}
               
@@ -315,23 +279,23 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
               {index === selectedIndex && (
                 <>
                   {/* Shine overlay — multiple layers (z-10, behind border) */}
-                  <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/25 via-white/8 to-transparent pointer-events-none rounded-xl" />
-                  <div className="absolute inset-0 z-10 bg-gradient-to-t from-transparent via-transparent to-white/15 pointer-events-none rounded-xl" />
+                  <div className="absolute inset-0 z-10 bg-gradient-to-br from-white/25 via-white/8 to-transparent pointer-events-none rounded-none" />
+                  <div className="absolute inset-0 z-10 bg-gradient-to-t from-transparent via-transparent to-white/15 pointer-events-none rounded-none" />
                   
                   {/* Inner glow — sophisticated (z-10, behind border) */}
-                  <div className="absolute inset-[2px] z-10 rounded-lg shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-1px_2px_rgba(0,0,0,0.1)] pointer-events-none" />
+                  <div className="absolute inset-[2px] z-10 rounded-none shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-1px_2px_rgba(0,0,0,0.1)] pointer-events-none" />
                   
                   {/* Subtle radial glow (z-10, behind border) */}
-                  <div className="absolute inset-0 z-10 rounded-xl" style={{ backgroundImage: 'radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 70%)' }} />
+                  <div className="absolute inset-0 z-10 rounded-none" style={{ backgroundImage: 'radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 70%)' }} />
                   
                   {/* Multi-layer border with glow (z-20, always on top of overlays) */}
-                  <div className="absolute inset-0 z-20 border-[3px] border-neutral-900 pointer-events-none rounded-xl shadow-[0_0_0_2px_rgba(255,255,255,0.4),0_0_0_3px_rgba(0,0,0,0.1)]" />
+                  <div className="absolute inset-0 z-20 border-[3px] border-neutral-900 pointer-events-none rounded-none shadow-[0_0_0_2px_rgba(255,255,255,0.4),0_0_0_3px_rgba(0,0,0,0.1)]" />
                   
                   {/* Elegant bottom accent bar (z-20, same level as border) */}
-                  <div className="absolute bottom-0 left-0 right-0 z-20 h-1.5 bg-gradient-to-r from-transparent via-neutral-900/90 to-transparent pointer-events-none rounded-b-xl" />
+                  <div className="absolute bottom-0 left-0 right-0 z-20 h-1.5 bg-gradient-to-r from-transparent via-neutral-900/90 to-transparent pointer-events-none rounded-none" />
                   
                   {/* Top highlight bar (z-20, same level as border) */}
-                  <div className="absolute top-0 left-0 right-0 z-20 h-[1px] bg-gradient-to-r from-transparent via-white/60 to-transparent pointer-events-none rounded-t-xl" />
+                  <div className="absolute top-0 left-0 right-0 z-20 h-[1px] bg-gradient-to-r from-transparent via-white/60 to-transparent pointer-events-none rounded-none" />
                 </>
               )}
               
@@ -345,14 +309,14 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
               {/* Elegant corner accents on hover (non-active) */}
               {index !== selectedIndex && (
                 <>
-                  <div className="absolute top-0 right-0 w-3 h-3 bg-gradient-to-br from-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-bl-xl" />
-                  <div className="absolute bottom-0 left-0 w-3 h-3 bg-gradient-to-tr from-neutral-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-tr-xl" />
+                  <div className="absolute top-0 right-0 w-3 h-3 bg-gradient-to-br from-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-none" />
+                  <div className="absolute bottom-0 left-0 w-3 h-3 bg-gradient-to-tr from-neutral-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-none" />
                 </>
               )}
               
               {/* Subtle pulse glow effect on active (z-0, behind everything) */}
               {index === selectedIndex && (
-                <div className="absolute -inset-1 z-0 rounded-xl bg-neutral-900/10 animate-pulse-slow pointer-events-none blur-sm" />
+                <div className="absolute -inset-1 z-0 rounded-none bg-neutral-900/10 animate-pulse-slow pointer-events-none blur-sm" />
               )}
             </button>
           ))}
