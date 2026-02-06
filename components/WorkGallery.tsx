@@ -192,10 +192,10 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
       {/* Nav ~10vh, Card ~70vh, Strips ~20vh */}
       <div
         ref={stripRef}
-        className="relative flex-shrink-0 border-t border-neutral-200/50 bg-white overflow-x-auto overflow-y-visible scroll-smooth shadow-[0_-4px_16px_rgba(0,0,0,0.06)]"
+        className="relative flex-shrink-0 bg-white overflow-x-auto overflow-y-visible scroll-smooth"
         style={{ scrollbarGutter: 'stable', WebkitOverflowScrolling: 'touch', height: '14vh', minHeight: '14vh', maxHeight: '14vh' }}
       >
-        <div className="flex gap-2 sm:gap-2.5 md:gap-3 px-2 sm:px-3 md:px-6 py-2 min-w-max relative flex-shrink-0 z-10" style={{ margin: '0 auto', width: 'fit-content' }}>
+        <div className="flex gap-px sm:gap-0.5 md:gap-1 px-1 sm:px-2 py-1 min-w-max relative flex-shrink-0 z-10" style={{ margin: '0 auto', width: 'fit-content' }}>
           {validProjects.map((project, index) => (
             <button
               key={project.id}
@@ -203,25 +203,19 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
               type="button"
               onClick={() => goTo(index)}
               style={{ animationDelay: `${index * 50}ms` }}
-              className={`group relative flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-neutral-100 overflow-hidden rounded-none transition-all duration-300 ease-out thumbnail-enter aspect-square ${
-                index === selectedIndex
-                  ? 'opacity-100'
-                  : 'opacity-70 hover:opacity-90'
-              }`}
+              className="group relative flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-neutral-100 overflow-hidden rounded-none transition-all duration-300 ease-out thumbnail-enter aspect-square"
               aria-label={`View ${project.title}`}
               aria-current={index === selectedIndex ? 'true' : undefined}
             >
               <div className="absolute inset-0 bg-neutral-100/90 rounded-none" />
               
-              {/* Selected = sharp, others = blur */}
+              {/* Active = full opacity; not active = reduced opacity */}
               <Image
                 src={project.images[0]}
                 alt={`${project.title} thumbnail`}
                 fill
                 className={`object-cover transition-all duration-300 ease-out rounded-none ${
-                  index === selectedIndex
-                    ? 'blur-0 brightness-100'
-                    : 'blur-[2px] brightness-95 group-hover:blur-[1px] group-hover:brightness-100'
+                  index === selectedIndex ? 'opacity-100' : 'opacity-50 group-hover:opacity-75'
                 }`}
                 sizes="(max-width: 640px) 48px, (max-width: 768px) 64px, 80px"
                 unoptimized
