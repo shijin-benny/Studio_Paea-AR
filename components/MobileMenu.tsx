@@ -13,7 +13,13 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ activeCategory, showTooltip, onTooltipChange, isHomePage = false }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
+
+  // Ensure component only renders menu overlay after mount to prevent hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Close menu when route changes
   useEffect(() => {
@@ -21,24 +27,33 @@ export default function MobileMenu({ activeCategory, showTooltip, onTooltipChang
   }, [pathname]);
 
   // Prevent body scroll when menu is open and ensure menu has highest priority
+  // Only run on client side to prevent hydration mismatches
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     if (isOpen) {
+      const originalOverflow = document.body.style.overflow;
+      const originalPosition = document.body.style.position;
+      const originalWidth = document.body.style.width;
+      const originalHeight = document.body.style.height;
+      
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'fixed';
       document.body.style.width = '100%';
       document.body.style.height = '100%';
+      
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.position = originalPosition;
+        document.body.style.width = originalWidth;
+        document.body.style.height = originalHeight;
+      };
     } else {
       document.body.style.overflow = '';
       document.body.style.position = '';
       document.body.style.width = '';
       document.body.style.height = '';
     }
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
-    };
   }, [isOpen]);
 
   // Always white menu background with black text for visibility
@@ -55,7 +70,7 @@ export default function MobileMenu({ activeCategory, showTooltip, onTooltipChang
           setIsOpen(prev => !prev);
         }}
         type="button"
-        className="lg:hidden relative w-10 h-10 flex items-center justify-center focus:outline-none transition-all duration-300 group cursor-pointer touch-manipulation"
+        className="lg:hidden relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center focus:outline-none transition-all duration-300 group cursor-pointer touch-manipulation"
         aria-label="Toggle menu"
         aria-expanded={isOpen}
         style={{ 
@@ -68,12 +83,12 @@ export default function MobileMenu({ activeCategory, showTooltip, onTooltipChang
           border: 'none',
           outline: 'none',
           cursor: 'pointer',
-          minWidth: '40px',
-          minHeight: '40px'
+          minWidth: '32px',
+          minHeight: '32px'
         } as React.CSSProperties}
       >
         {/* Animated Hamburger Icon */}
-        <div className="relative w-6 h-5 flex flex-col justify-between pointer-events-none">
+        <div className="relative w-5 h-4 sm:w-6 sm:h-5 flex flex-col justify-between pointer-events-none">
           <span
             className={`block h-0.5 w-full ${isHomePage ? 'text-white' : 'text-neutral-900'} transition-all duration-300 origin-center ${
               isOpen ? 'rotate-45 translate-y-2' : ''
@@ -96,7 +111,7 @@ export default function MobileMenu({ activeCategory, showTooltip, onTooltipChang
       </button>
 
       {/* Mobile Menu Overlay — Full Screen Coverage with Highest Priority */}
-      {isOpen && (
+      {isMounted && isOpen && (
         <div 
           className="fixed inset-0 lg:hidden"
           style={{ 

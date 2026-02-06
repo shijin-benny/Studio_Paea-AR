@@ -26,7 +26,7 @@ export default function HomePage() {
       {/* Logo centered — hidden when menu is open (lower z-index than menu overlay) */}
       <Link
         href="/"
-        className="logo-animate absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[1] text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light tracking-[0.3em] sm:tracking-[0.4em] uppercase hover:opacity-90 px-4 text-center"
+        className="logo-animate absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[1] text-white text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-bold sm:font-light tracking-[0.15em] sm:tracking-[0.25em] md:tracking-[0.3em] lg:tracking-[0.4em] uppercase hover:opacity-90 px-4 text-center whitespace-nowrap"
         style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3)' }}
         aria-label="STUDIO PAEA - Home"
       >

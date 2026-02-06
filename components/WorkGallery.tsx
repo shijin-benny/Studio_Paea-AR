@@ -151,12 +151,13 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgb(0,0,0) 1px, transparent 0)', backgroundSize: '40px 40px' }} />
 
       {/* Main image — ultra-luxurious presentation */}
-      <div className="flex-1 min-h-0 flex flex-col items-center justify-center px-2 sm:px-4 pt-20 sm:pt-16 md:pt-14 pb-2 sm:pb-4 md:pb-0 overflow-hidden relative gallery-fade-in" style={{ zIndex: 1, pointerEvents: 'auto' as const } as React.CSSProperties}>
+      {/* Nav ~10vh (fixed overlay), Card ~70vh, Strips ~20vh */}
+      <div className="flex flex-col items-center justify-center px-2 sm:px-4 overflow-hidden relative gallery-fade-in" style={{ zIndex: 1, pointerEvents: 'auto' as const, height: '70vh', minHeight: '70vh', maxHeight: '70vh', marginTop: '10vh' } as React.CSSProperties}>
         {/* Decorative corner accents — hidden on mobile */}
         <div className="hidden md:block absolute top-20 left-8 w-24 h-24 border-t-2 border-l-2 border-neutral-200/40 opacity-30" />
         <div className="hidden md:block absolute top-20 right-8 w-24 h-24 border-t-2 border-r-2 border-neutral-200/40 opacity-30" />
         
-        <div className="relative w-full h-full max-w-5xl max-h-full bg-gradient-to-br from-neutral-50 via-white via-neutral-50/50 to-neutral-50 overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl shadow-[0_25px_70px_-20px_rgba(0,0,0,0.35),0_0_0_1px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.6)]">
+        <div className="relative w-full h-full max-w-5xl max-h-full bg-gradient-to-br from-neutral-50 via-white via-neutral-50/50 to-neutral-50 overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl shadow-[0_25px_70px_-20px_rgba(0,0,0,0.35),0_0_0_1px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.6)]" style={{ maxHeight: '100%' }}>
           {/* Modern Loading Spinner */}
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center z-30 bg-gradient-to-br from-white/95 via-neutral-50/80 to-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden">
@@ -228,10 +229,11 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
       </div>
 
       {/* Thumbnail strip — center when few images, scroll when many */}
+      {/* Nav ~10vh, Card ~70vh, Strips ~20vh */}
       <div
         ref={stripRef}
-        className="relative flex-shrink-0 border-t border-neutral-200/50 bg-gradient-to-b from-white via-neutral-50/30 via-white/80 to-neutral-50/50 overflow-x-auto overflow-y-hidden scroll-smooth backdrop-blur-lg shadow-[0_-8px_32px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.8)]"
-        style={{ scrollbarGutter: 'stable' }}
+        className="relative flex-shrink-0 border-t border-neutral-200/50 bg-gradient-to-b from-white via-neutral-50/30 via-white/80 to-neutral-50/50 overflow-x-auto overflow-y-visible scroll-smooth backdrop-blur-lg shadow-[0_-8px_32px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,255,255,0.8)]"
+        style={{ scrollbarGutter: 'stable', WebkitOverflowScrolling: 'touch', height: '20vh', minHeight: '20vh', maxHeight: '20vh' }}
       >
         {/* Elegant decorative elements */}
         <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-neutral-300/60 via-neutral-200/40 to-transparent" />
@@ -241,7 +243,7 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
         <div className="absolute top-0 left-0 w-12 sm:w-20 h-full bg-gradient-to-r from-white via-transparent to-transparent pointer-events-none z-0" />
         <div className="absolute top-0 right-0 w-12 sm:w-20 h-full bg-gradient-to-l from-white via-transparent to-transparent pointer-events-none z-0" />
         
-        <div className="flex gap-3 sm:gap-5 md:gap-6 px-4 sm:px-6 md:px-12 py-2.5 sm:py-3 min-w-max relative flex-shrink-0 z-10" style={{ margin: '0 auto', width: 'fit-content' }}>
+        <div className="flex gap-2.5 sm:gap-3 md:gap-5 lg:gap-6 px-3 sm:px-4 md:px-6 lg:px-12 py-2.5 sm:py-3 min-w-max relative flex-shrink-0 z-10" style={{ margin: '0 auto', width: 'fit-content' }}>
           {validProjects.map((project, index) => (
             <button
               key={project.id}

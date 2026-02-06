@@ -120,10 +120,10 @@ export default function ContactPage() {
   }, [formData, validateField]);
 
   return (
-    <div className="h-screen bg-white overflow-hidden flex flex-col" style={{ position: 'relative', zIndex: 1 }}>
+    <div className="min-h-screen bg-white overflow-hidden flex flex-col" style={{ position: 'relative', zIndex: 1 }}>
 
       {/* Main content — Single page, no scroll */}
-      <div className="flex-1 px-4 sm:px-6 md:px-12 py-6 sm:py-8 flex items-center overflow-auto bg-gradient-to-br from-white via-neutral-50/30 to-white">
+      <div className="flex-1 px-4 sm:px-6 md:px-12 pt-20 pb-20 sm:pt-24 sm:pb-8 md:pt-20 md:pb-8 flex items-center overflow-auto bg-gradient-to-br from-white via-neutral-50/30 to-white">
         <div className="max-w-7xl mx-auto w-full h-full flex items-center">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-32 items-start lg:items-center w-full">
             {/* Left Column — Contact Information — Modern & Elegant */}

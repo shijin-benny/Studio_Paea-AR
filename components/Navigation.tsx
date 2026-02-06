@@ -21,14 +21,13 @@ export default function Navigation({ isHomePage = false }: NavigationProps) {
     return null;
   }, [pathname]);
 
-  // Hero page: absolute positioning, white text, transparent background
-  // Other pages: absolute positioning, black text, transparent background
-  const headerClasses = `absolute top-0 left-0 right-0 flex items-center justify-between px-4 sm:px-6 md:px-12 py-4 sm:py-5 overflow-visible ${
+  // Fixed navigation bar at top - white text on hero page, black text on other pages
+  const headerClasses = `fixed top-0 left-0 right-0 flex items-center justify-between px-4 sm:px-6 md:px-12 py-4 sm:py-5 overflow-visible ${
     isHomePage ? 'text-white' : 'text-neutral-900'
   }`;
 
   const headerStyle: React.CSSProperties = { 
-    zIndex: 100,
+    zIndex: 1000,
     pointerEvents: 'auto' as const
   };
 
@@ -36,7 +35,7 @@ export default function Navigation({ isHomePage = false }: NavigationProps) {
     <header className={headerClasses} style={headerStyle}>
       {/* Categories Nav — visible on all devices */}
       <nav
-        className={`flex items-center gap-2 sm:gap-3 md:gap-5 text-[10px] sm:text-xs md:text-sm font-light tracking-[0.25em] uppercase ${
+        className={`flex items-center gap-1.5 sm:gap-2 md:gap-3 lg:gap-5 text-xs sm:text-sm md:text-base lg:text-lg font-bold sm:font-semibold md:font-light tracking-[0.2em] sm:tracking-[0.25em] uppercase ${
           isHomePage ? 'text-white' : 'text-neutral-900'
         }`}
         aria-label="Categories"
