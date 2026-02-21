@@ -41,7 +41,6 @@ export default function HomePage() {
           playsInline
           loop={HERO_VIDEOS.length === 1}
           preload="auto"
-          fetchPriority="high"
           onEnded={HERO_VIDEOS.length > 1 ? goToNext : undefined}
         />
       ) : (
