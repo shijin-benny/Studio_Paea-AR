@@ -8,9 +8,10 @@ const EXT = ['.mp4', '.webm', '.mov'];
 let list = [];
 try {
   if (fs.existsSync(VIDEO_DIR)) {
-    const names = fs.readdirSync(VIDEO_DIR);
-    list = names
-      .filter((n) => EXT.some((e) => n.toLowerCase().endsWith(e)))
+    const entries = fs.readdirSync(VIDEO_DIR, { withFileTypes: true });
+    list = entries
+      .filter((e) => e.isFile() && EXT.some((ext) => e.name.toLowerCase().endsWith(ext)))
+      .map((e) => e.name)
       .sort()
       .map((n) => `  '/videos/${n}'`);
   }

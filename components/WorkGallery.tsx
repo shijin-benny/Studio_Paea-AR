@@ -58,12 +58,12 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
     return () => clearTimeout(timeout);
   }, [validProjects.length]);
 
-  // Fallback: clear loading if image doesn't fire onLoad within 1.2s (faster recovery)
+  // Fallback: clear loading if image doesn't fire onLoad (faster recovery)
   useEffect(() => {
     if (validProjects.length > 0) {
       const timeout = setTimeout(() => {
         if (isLoading) setIsLoading(false);
-      }, 1200);
+      }, 600);
       return () => clearTimeout(timeout);
     }
   }, [validProjects.length, isLoading]);
@@ -153,28 +153,33 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
             </div>
           )}
           
+          {/* Preload current ±2 so images appear fast when advancing */}
           {validProjects.map((project, index) => {
             const isActive = index === selectedIndex && !isLoading;
+            const isNear = index >= selectedIndex - 2 && index <= selectedIndex + 2;
             return (
             <div
               key={project.id}
-              className={`absolute inset-0 transition-opacity duration-300 ${
+              className={`absolute inset-0 transition-opacity duration-200 ${
                 isActive ? 'opacity-100' : 'opacity-0'
               }`}
               style={{ pointerEvents: (isActive ? 'auto' : 'none') as React.CSSProperties['pointerEvents'] }}
             >
-              <Image
-                src={project.images[0]}
-                alt={`${project.title} - ${index + 1} of ${validProjects.length}`}
-                fill
-                className="object-contain p-2 sm:p-4"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1024px"
-                priority={index < 2}
-                loading={index < 3 ? 'eager' : 'lazy'}
-                fetchPriority={index === 0 ? 'high' : undefined}
-                onLoad={() => handleImageLoad(index)}
-                onLoadingComplete={() => handleImageLoad(index)}
-              />
+              {isNear ? (
+                <Image
+                  src={project.images[0]}
+                  alt={`${project.title} - ${index + 1} of ${validProjects.length}`}
+                  fill
+                  className="object-contain p-2 sm:p-4"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1024px"
+                  priority={index <= 1}
+                  loading={index <= 2 ? 'eager' : 'lazy'}
+                  fetchPriority={index === 0 ? 'high' : undefined}
+                  decoding="async"
+                  onLoad={() => handleImageLoad(index)}
+                  onLoadingComplete={() => handleImageLoad(index)}
+                />
+              ) : null}
             </div>
             );
           })}
@@ -207,12 +212,13 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
                 src={project.images[0]}
                 alt={`${project.title} thumbnail`}
                 fill
-                className={`object-cover transition-all duration-300 ease-out rounded-none ${
+                className={`object-cover transition-all duration-200 ease-out rounded-none ${
                   index === selectedIndex ? 'opacity-100' : 'opacity-50 group-hover:opacity-75'
                 }`}
                 sizes="(max-width: 640px) 48px, (max-width: 768px) 64px, 80px"
                 unoptimized
-                loading={index < 3 ? 'eager' : 'lazy'}
+                loading={index < 8 ? 'eager' : 'lazy'}
+                decoding="async"
                 onError={(e) => {
                   const target = e.currentTarget;
                   if (target.parentElement) target.parentElement.style.opacity = '1';

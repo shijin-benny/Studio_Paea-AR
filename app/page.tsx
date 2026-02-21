@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { HERO_VIDEOS } from '@/lib/hero-videos';
@@ -10,10 +10,26 @@ const FALLBACK_HERO_IMAGE = '/images/AT/ARC_7_hero.png';
 export default function HomePage() {
   const [videoIndex, setVideoIndex] = useState(0);
   const [videoReady, setVideoReady] = useState(false);
+  const [videoInView, setVideoInView] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
 
   const hasVideos = HERO_VIDEOS.length > 0;
   const currentVideoSrc = hasVideos ? HERO_VIDEOS[videoIndex] : null;
+
+  // Lazy load video only when hero is in viewport
+  useEffect(() => {
+    if (!hasVideos || !heroRef.current) return;
+    const el = heroRef.current;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) setVideoInView(true);
+      },
+      { rootMargin: '50px', threshold: 0.1 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [hasVideos]);
 
   const goToNext = () => {
     setVideoReady(false);
@@ -22,6 +38,7 @@ export default function HomePage() {
 
   return (
     <div
+      ref={heroRef}
       className="relative h-screen w-full overflow-hidden bg-neutral-900"
       style={{ position: 'relative', zIndex: 1 }}
     >
@@ -49,12 +66,12 @@ export default function HomePage() {
         />
       )}
 
-      {/* Layer 2: Video — lazy: only current video loads; fades in when ready */}
-      {hasVideos && currentVideoSrc && (
+      {/* Layer 2: Video — lazy: load only when hero in view; one video at a time */}
+      {hasVideos && currentVideoSrc && videoInView && (
         <video
           ref={videoRef}
           key={currentVideoSrc}
-          src={currentVideoSrc}
+          src={encodeURI(currentVideoSrc)}
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-out"
           style={{ opacity: videoReady ? 1 : 0 }}
           autoPlay

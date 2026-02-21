@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import MobileMenu from './MobileMenu';
 
 interface NavigationProps {
@@ -12,7 +12,15 @@ interface NavigationProps {
 export default function Navigation({ isHomePage = false }: NavigationProps) {
   const [showTooltip, setShowTooltip] = useState(false);
   const pathname = usePathname();
-  
+  const router = useRouter();
+
+  // Prefetch category pages so click opens fast
+  useEffect(() => {
+    router.prefetch('/work/architecture');
+    router.prefetch('/work/interiors');
+    router.prefetch('/work/landscape');
+  }, [router]);
+
   // Memoize activeCategory calculation
   const activeCategory = useMemo(() => {
     if (pathname === '/work/architecture') return 'architecture';
@@ -42,6 +50,7 @@ export default function Navigation({ isHomePage = false }: NavigationProps) {
       >
         <Link
           href="/work/architecture"
+          prefetch={true}
           className={
             activeCategory === 'architecture'
               ? isHomePage
@@ -58,6 +67,7 @@ export default function Navigation({ isHomePage = false }: NavigationProps) {
         </span>
         <Link
           href="/work/interiors"
+          prefetch={true}
           className={
             activeCategory === 'interiors'
               ? isHomePage
@@ -74,6 +84,7 @@ export default function Navigation({ isHomePage = false }: NavigationProps) {
         </span>
         <Link
           href="/work/landscape"
+          prefetch={true}
           className={
             activeCategory === 'landscape'
               ? isHomePage

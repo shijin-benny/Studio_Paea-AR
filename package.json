@@ -8,7 +8,8 @@
     "prebuild": "node scripts/list-hero-videos.js",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "node -e \"require('fs').rmSync('.next', { recursive: true, force: true })\""
   },
   "dependencies": {
     "googleapis": "^171.4.0",
