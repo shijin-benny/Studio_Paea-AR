@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/list-hero-videos.js",
     "dev": "next dev",
+    "prebuild": "node scripts/list-hero-videos.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

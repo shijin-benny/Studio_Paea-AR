@@ -58,16 +58,12 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
     return () => clearTimeout(timeout);
   }, [validProjects.length]);
 
-  // Handle initial image load - set loading to false after a timeout if image doesn't load
+  // Fallback: clear loading if image doesn't fire onLoad within 1.2s (faster recovery)
   useEffect(() => {
     if (validProjects.length > 0) {
-      // Set a timeout to clear loading state if image takes too long
       const timeout = setTimeout(() => {
-        if (isLoading) {
-          setIsLoading(false);
-        }
-      }, 3000); // 3 second max wait
-      
+        if (isLoading) setIsLoading(false);
+      }, 1200);
       return () => clearTimeout(timeout);
     }
   }, [validProjects.length, isLoading]);
@@ -110,10 +106,11 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
 
   const goTo = useCallback((index: number) => {
     if (index !== selectedIndex && index >= 0 && index < validProjects.length) {
-      setIsLoading(true);
       setSelectedIndex(index);
+      // Only show loading if this image isn't loaded yet (instant switch when cached)
+      if (!imageLoaded[index]) setIsLoading(true);
     }
-  }, [selectedIndex, validProjects.length]);
+  }, [selectedIndex, validProjects.length, imageLoaded]);
 
   const handleImageLoad = useCallback((index: number) => {
     setImageLoaded(prev => {
@@ -121,12 +118,7 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
       if (prev[index]) return prev;
       return { ...prev, [index]: true };
     });
-    if (index === selectedIndex) {
-      // Small delay to ensure smooth transition
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 100);
-    }
+    if (index === selectedIndex) setIsLoading(false);
   }, [selectedIndex]);
 
   if (!projects.length) {
@@ -177,10 +169,11 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
                 fill
                 className="object-contain p-2 sm:p-4"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1024px"
-                priority={index === 0}
+                priority={index < 2}
+                loading={index < 3 ? 'eager' : 'lazy'}
+                fetchPriority={index === 0 ? 'high' : undefined}
                 onLoad={() => handleImageLoad(index)}
                 onLoadingComplete={() => handleImageLoad(index)}
-                loading={index === 0 ? 'eager' : 'lazy'}
               />
             </div>
             );
