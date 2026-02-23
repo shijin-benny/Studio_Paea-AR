@@ -153,10 +153,10 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
             </div>
           )}
           
-          {/* Preload current ±2 so images appear fast when advancing */}
+          {/* Preload current ±3 so images appear fast when advancing */}
           {validProjects.map((project, index) => {
             const isActive = index === selectedIndex && !isLoading;
-            const isNear = index >= selectedIndex - 2 && index <= selectedIndex + 2;
+            const isNear = index >= selectedIndex - 3 && index <= selectedIndex + 3;
             return (
             <div
               key={project.id}
@@ -172,9 +172,9 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
                   fill
                   className="object-contain p-2 sm:p-4"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1024px"
-                  priority={index <= 1}
-                  loading={index <= 2 ? 'eager' : 'lazy'}
-                  fetchPriority={index === 0 ? 'high' : undefined}
+                  priority={index <= 3}
+                  loading={index <= 4 ? 'eager' : 'lazy'}
+                  fetchPriority={index <= 1 ? 'high' : undefined}
                   decoding="async"
                   onLoad={() => handleImageLoad(index)}
                   onLoadingComplete={() => handleImageLoad(index)}
@@ -216,8 +216,7 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
                   index === selectedIndex ? 'opacity-100' : 'opacity-50 group-hover:opacity-75'
                 }`}
                 sizes="(max-width: 640px) 48px, (max-width: 768px) 64px, 80px"
-                unoptimized
-                loading={index < 8 ? 'eager' : 'lazy'}
+                loading={index < 16 ? 'eager' : 'lazy'}
                 decoding="async"
                 onError={(e) => {
                   const target = e.currentTarget;
