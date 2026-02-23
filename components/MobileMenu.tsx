@@ -4,6 +4,29 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+const menuIconClass = 'w-5 h-5 flex-shrink-0';
+
+const WorkIcon = () => (
+  <svg className={menuIconClass} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <rect x="3" y="3" width="7" height="7" />
+    <rect x="14" y="3" width="7" height="7" />
+    <rect x="3" y="14" width="7" height="7" />
+    <rect x="14" y="14" width="7" height="7" />
+  </svg>
+);
+const PublicationsIcon = () => (
+  <svg className={menuIconClass} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+  </svg>
+);
+const ContactIcon = () => (
+  <svg className={menuIconClass} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+    <polyline points="22,6 12,13 2,6" />
+  </svg>
+);
+
 interface MobileMenuProps {
   activeCategory?: string | null;
   showTooltip?: boolean;
@@ -62,7 +85,7 @@ export default function MobileMenu({ activeCategory, showTooltip, onTooltipChang
 
   return (
     <>
-      {/* Mobile Menu Button */}
+      {/* Mobile Menu Button — icon + text */}
       <button
         onClick={(e) => {
           e.preventDefault();
@@ -70,7 +93,9 @@ export default function MobileMenu({ activeCategory, showTooltip, onTooltipChang
           setIsOpen(prev => !prev);
         }}
         type="button"
-        className="lg:hidden relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center focus:outline-none transition-all duration-300 group cursor-pointer touch-manipulation"
+        className={`lg:hidden relative flex items-center gap-2 py-1.5 px-1 focus:outline-none transition-all duration-300 group cursor-pointer touch-manipulation text-xs font-light tracking-[0.2em] ${
+          isHomePage ? 'text-white' : 'text-neutral-900'
+        }`}
         aria-label="Toggle menu"
         aria-expanded={isOpen}
         style={{ 
@@ -82,32 +107,31 @@ export default function MobileMenu({ activeCategory, showTooltip, onTooltipChang
           backgroundColor: 'transparent',
           border: 'none',
           outline: 'none',
-          cursor: 'pointer',
-          minWidth: '32px',
-          minHeight: '32px'
+          cursor: 'pointer'
         } as React.CSSProperties}
       >
         {/* Animated Hamburger Icon */}
-        <div className="relative w-5 h-4 sm:w-6 sm:h-5 flex flex-col justify-between pointer-events-none">
+        <div className="relative w-5 h-4 sm:w-6 sm:h-5 flex flex-col justify-between pointer-events-none flex-shrink-0">
           <span
-            className={`block h-0.5 w-full ${isHomePage ? 'text-white' : 'text-neutral-900'} transition-all duration-300 origin-center ${
+            className={`block h-0.5 w-full transition-all duration-300 origin-center ${
               isOpen ? 'rotate-45 translate-y-2' : ''
             }`}
             style={{ backgroundColor: 'currentColor' }}
           />
           <span
-            className={`block h-0.5 w-full ${isHomePage ? 'text-white' : 'text-neutral-900'} transition-all duration-300 ${
+            className={`block h-0.5 w-full transition-all duration-300 ${
               isOpen ? 'opacity-0' : 'opacity-100'
             }`}
             style={{ backgroundColor: 'currentColor' }}
           />
           <span
-            className={`block h-0.5 w-full ${isHomePage ? 'text-white' : 'text-neutral-900'} transition-all duration-300 origin-center ${
+            className={`block h-0.5 w-full transition-all duration-300 origin-center ${
               isOpen ? '-rotate-45 -translate-y-2' : ''
             }`}
             style={{ backgroundColor: 'currentColor' }}
           />
         </div>
+        <span>Menu</span>
       </button>
 
       {/* Mobile Menu Overlay — Full Screen Coverage with Highest Priority */}
@@ -218,8 +242,8 @@ export default function MobileMenu({ activeCategory, showTooltip, onTooltipChang
                     <Link
                       href="/"
                       onClick={() => setIsOpen(false)}
-                      className={`text-base font-light tracking-wide transition-opacity hover:opacity-70 ${
-                        pathname === '/' ? 'border-l-2 pl-4' : ''
+                      className={`inline-flex items-center gap-3 text-base font-light tracking-wide transition-opacity hover:opacity-70 ${
+                        pathname === '/' ? 'border-l-2 pl-4' : 'pl-4'
                       }`}
                       style={{
                         color: '#000000',
@@ -228,10 +252,11 @@ export default function MobileMenu({ activeCategory, showTooltip, onTooltipChang
                         fontWeight: pathname === '/' ? 500 : 300
                       }}
                     >
-                      Work
+                      <WorkIcon />
+                      <span>Work</span>
                     </Link>
                     <span
-                      className="relative inline-block cursor-not-allowed text-base font-light tracking-wide"
+                      className="relative inline-flex items-center gap-3 cursor-not-allowed text-base font-light tracking-wide pl-4"
                       style={{
                         color: 'rgba(0, 0, 0, 0.7)',
                         visibility: 'visible',
@@ -241,7 +266,8 @@ export default function MobileMenu({ activeCategory, showTooltip, onTooltipChang
                       onMouseEnter={() => onTooltipChange?.(true)}
                       onMouseLeave={() => onTooltipChange?.(false)}
                     >
-                      Publications
+                      <PublicationsIcon />
+                      <span>Publications</span>
                       {showTooltip && (
                         <span className="absolute top-full left-0 mt-2 px-3 py-1.5 text-[10px] font-light tracking-wider uppercase bg-neutral-900 text-white rounded-sm whitespace-nowrap z-[9999] shadow-xl animate-in fade-in-0 zoom-in-95 duration-200">
                           Coming Soon
@@ -252,8 +278,8 @@ export default function MobileMenu({ activeCategory, showTooltip, onTooltipChang
                     <Link
                       href="/contact"
                       onClick={() => setIsOpen(false)}
-                      className={`text-base font-light tracking-wide transition-opacity hover:opacity-70 ${
-                        pathname === '/contact' ? 'border-l-2 pl-4' : ''
+                      className={`inline-flex items-center gap-3 text-base font-light tracking-wide transition-opacity hover:opacity-70 ${
+                        pathname === '/contact' ? 'border-l-2 pl-4' : 'pl-4'
                       }`}
                       style={{
                         color: '#000000',
@@ -262,7 +288,8 @@ export default function MobileMenu({ activeCategory, showTooltip, onTooltipChang
                         fontWeight: pathname === '/contact' ? 500 : 300
                       }}
                     >
-                      Contact
+                      <ContactIcon />
+                      <span>Contact</span>
                     </Link>
                   </nav>
                 </div>

@@ -59,6 +59,52 @@ body {
   transition: letter-spacing 0.4s ease, opacity 0.2s ease;
 }
 
+/* Hero titles — smooth enter (no lag: GPU-friendly, no blur, smooth easing) */
+@keyframes hero-title-first-in {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes hero-title-studio-in {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* First title appears quickly on load (visible on black/dim screen before video); video does not affect title timing */
+.hero-title-first {
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: hero-title-first-in 0.4s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+.hero-title-inline {
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: hero-title-studio-in 0.85s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+@keyframes hero-title-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.hero-title-logo-out {
+  animation: hero-title-out 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 /* Gallery animations */
 @keyframes gallery-fade-in {
   0% {

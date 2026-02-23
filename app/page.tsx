@@ -7,13 +7,26 @@ import { HERO_VIDEOS } from '@/lib/hero-videos';
 
 const FALLBACK_HERO_IMAGE = '/images/AT/ARC_7_hero.png';
 
+const LOGO_DURATION_MS = 5000; // show "The paper earth" then hide, then "studio paea" appears
+
 export default function HomePage() {
   const [videoIndex, setVideoIndex] = useState(0);
   const [videoReady, setVideoReady] = useState(false);
   const [videoInView, setVideoInView] = useState(false);
+  const [showLogo, setShowLogo] = useState(true);       // first: The paper earth
+  const [showStudioPaea, setShowStudioPaea] = useState(false); // then: studio paea (same design, no bold)
   const videoRef = useRef<HTMLVideoElement>(null);
   const nextVideoRef = useRef<HTMLVideoElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
+
+  // First "The paper earth" logo; after delay hide it and show "studio paea" (same design, no bold)
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setShowLogo(false);
+      setShowStudioPaea(true);
+    }, LOGO_DURATION_MS);
+    return () => clearTimeout(t);
+  }, []);
 
   const hasVideos = HERO_VIDEOS.length > 0;
   const currentVideoSrc = hasVideos ? HERO_VIDEOS[videoIndex] : null;
@@ -47,9 +60,23 @@ export default function HomePage() {
       className="relative h-screen w-full overflow-hidden bg-neutral-900"
       style={{ position: 'relative', zIndex: 1 }}
     >
-      {/* No hero image when videos exist — go straight to video for faster playback */}
+      {/* When videos exist: dim fallback so no harsh black screen; title shows immediately. Video fades in when ready (does not affect title timing). */}
+      {hasVideos && (
+        <Image
+          src={FALLBACK_HERO_IMAGE}
+          alt=""
+          role="presentation"
+          fill
+          priority
+          unoptimized
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+          style={{ opacity: videoReady ? 0 : 0.2 }}
+          sizes="100vw"
+          aria-hidden
+        />
+      )}
 
-      {/* Fallback image only when there are no videos */}
+      {/* No videos: full fallback image */}
       {!hasVideos && (
         <Image
           src={FALLBACK_HERO_IMAGE}
@@ -62,13 +89,13 @@ export default function HomePage() {
         />
       )}
 
-      {/* Current video — visible as soon as it can play */}
+      {/* Current video — fades in when ready; title change is independent of video */}
       {hasVideos && currentVideoSrc && videoInView && (
         <video
           ref={videoRef}
           key={currentVideoSrc}
           src={encodeURI(currentVideoSrc)}
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-out"
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-out"
           style={{ opacity: videoReady ? 1 : 0 }}
           autoPlay
           muted
@@ -101,18 +128,33 @@ export default function HomePage() {
         aria-hidden
       />
 
-      {/* Logo */}
-      <Link
-        href="/"
-        className="logo-animate absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[2] text-white text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-bold sm:font-light tracking-[0.15em] sm:tracking-[0.25em] md:tracking-[0.3em] lg:tracking-[0.4em] uppercase hover:opacity-90 px-4 text-center whitespace-nowrap"
+      {/* Hero: first "The paper earth" (tighter inline spacing), then "studio paea" (wide spacing); fully responsive */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[2] w-[90vw] max-w-4xl px-3 sm:px-4 md:px-6 text-center"
         style={{
-          textShadow:
-            '0 2px 8px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3)',
+          textShadow: '0 2px 8px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3)',
         }}
-        aria-label="STUDIO PAEA - Home"
       >
-        STUDIO PAEA
-      </Link>
+        <Link
+          href="/"
+          className="inline-block text-left text-white font-normal leading-tight hover:opacity-90 transition-opacity text-2xl sm:text-4xl md:text-5xl lg:text-6xl"
+          aria-label="The paper earth studio paea - Home"
+        >
+          {/* Phase 1: The paper earth — reduced letter spacing, maximum inline */}
+          {showLogo && (
+            <span className="hero-title-first inline-block tracking-tight sm:tracking-tight" style={{ letterSpacing: '-0.02em' }}>
+              <span className="text-[1.15em]">T</span>he paper{' '}
+              <span className="relative inline-block border-b-2 border-solid" style={{ borderColor: 'var(--hero-accent, #6b7c5c)', borderBottomWidth: '3px' }}>ea</span>rth
+            </span>
+          )}
+          {/* Phase 2: studio paea — wide letter spacing */}
+          {showStudioPaea && (
+            <span className="hero-title-inline inline-block tracking-[0.35em] sm:tracking-[0.4em] md:tracking-[0.45em] lg:tracking-[0.5em]">
+              studio paea
+            </span>
+          )}
+        </Link>
+      </div>
     </div>
   );
 }

@@ -141,9 +141,8 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
     <div className="h-screen overflow-hidden bg-white flex flex-col relative" style={{ position: 'relative', zIndex: 1 }}>
 
       {/* Main image — ultra-luxurious presentation */}
-      {/* Nav ~10vh (fixed overlay), Card ~70vh, Strips ~20vh */}
-      <div className="flex flex-col items-center justify-center px-2 sm:px-4 overflow-hidden relative gallery-fade-in" style={{ zIndex: 1, pointerEvents: 'auto' as const, height: '70vh', minHeight: '70vh', maxHeight: '70vh', marginTop: '10vh' } as React.CSSProperties}>
-        <div className="relative w-full h-full max-w-5xl max-h-full bg-white overflow-hidden rounded-none" style={{ maxHeight: '100%' }}>
+      <div className="flex flex-col items-center justify-center px-2 sm:px-4 overflow-hidden relative gallery-fade-in" style={{ zIndex: 1, pointerEvents: 'auto' as const, height: '76vh', minHeight: '76vh', maxHeight: '76vh', marginTop: '10vh' } as React.CSSProperties}>
+        <div className="relative w-full h-full max-h-full bg-white overflow-hidden rounded-none" style={{ maxWidth: '1320px', maxHeight: '100%' }}>
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center z-30 bg-white">
               <div className="flex flex-col items-center gap-3 relative z-10">
@@ -171,7 +170,7 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
                   alt={`${project.title} - ${index + 1} of ${validProjects.length}`}
                   fill
                   className="object-contain p-2 sm:p-4"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1024px"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1320px"
                   priority={index <= 3}
                   loading={index <= 4 ? 'eager' : 'lazy'}
                   fetchPriority={index <= 1 ? 'high' : undefined}
@@ -186,13 +185,13 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
         </div>
       </div>
 
-      {/* Thumbnail strip — center when few images, scroll when many */}
-      {/* Nav ~10vh, Card ~70vh, Strips ~20vh */}
-      <div
-        ref={stripRef}
-        className="relative flex-shrink-0 bg-white overflow-x-auto overflow-y-visible scroll-smooth"
-        style={{ scrollbarGutter: 'stable', WebkitOverflowScrolling: 'touch', height: '14vh', minHeight: '14vh', maxHeight: '14vh' }}
-      >
+      {/* Thumbnail strip — vertically centered in space between preview and page bottom */}
+      <div className="flex-1 min-h-0 flex items-center justify-center bg-white overflow-hidden">
+        <div
+          ref={stripRef}
+          className="relative w-full bg-white overflow-x-auto overflow-y-visible scroll-smooth flex-shrink-0"
+          style={{ scrollbarGutter: 'stable', WebkitOverflowScrolling: 'touch', height: '14vh', minHeight: '80px', maxHeight: '14vh' }}
+        >
         <div className="flex gap-px sm:gap-0.5 md:gap-1 px-1 sm:px-2 py-1 min-w-max relative flex-shrink-0 z-10" style={{ margin: '0 auto', width: 'fit-content' }}>
           {validProjects.map((project, index) => (
             <button
@@ -239,6 +238,7 @@ export default function WorkGallery({ projects }: WorkGalleryProps) {
               )}
             </button>
           ))}
+        </div>
         </div>
       </div>
     </div>
